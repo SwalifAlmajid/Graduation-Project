@@ -1,0 +1,165 @@
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+} from 'react-native';
+
+const Onboarding2 = ({ navigation }) => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity
+        style={styles.skip}
+        onPress={() => navigation.navigate('SignIn')}
+      >
+        <Text style={styles.skipText}>تخطي</Text>
+      </TouchableOpacity>
+
+      <View style={styles.content}>
+        <Image
+          source={require('./assets/onboarding2.png')}
+          style={styles.imageBox}
+          resizeMode="contain"
+        />
+
+        <Text style={styles.title}>ادعم المزارع المحلي</Text>
+
+        <Text style={styles.subtitle}>
+          تجربة شراء سهلة وادفع{'\n'}بالطريقة التي تناسبك
+        </Text>
+      </View>
+
+      <View style={styles.bottomSection}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate('SignIn')}
+        >
+          <Text style={styles.primaryButtonText}>ابدأ الآن</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() => navigation.navigate('SignIn')}
+        >
+          <Text style={styles.secondaryButtonText}>تسجيل الدخول</Text>
+        </TouchableOpacity>
+
+        <View style={styles.dots}>
+          <View style={styles.inactiveDot} />
+          <View style={styles.activeDot} />
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export default Onboarding2;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#CFE3D0',
+  },
+
+  skip: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    marginRight: 20,
+  },
+
+  skipText: {
+    fontSize: 16,
+    color: '#111',
+    fontWeight: '500',
+  },
+
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+
+  imageBox: {
+    width: 230,
+    height: 230,
+    marginBottom: 10,
+  },
+
+  title: {
+    fontSize: 29,
+    fontWeight: 'bold',
+    color: '#111',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+
+  subtitle: {
+    fontSize: 20,
+    color: '#111',
+    textAlign: 'center',
+    lineHeight: 30,
+  },
+
+  bottomSection: {
+    paddingHorizontal: 24,
+    paddingBottom: 35,
+  },
+
+  primaryButton: {
+    backgroundColor: '#3D8B4F',
+    paddingVertical: 18,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+    marginBottom: 12,
+  },
+
+  primaryButtonText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+
+  secondaryButton: {
+    backgroundColor: '#F2F2F2',
+    paddingVertical: 15,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#B9B9B9',
+  },
+
+  secondaryButtonText: {
+    color: '#333',
+    fontSize: 18,
+    fontWeight: '500',
+  },
+
+  dots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 18,
+  },
+
+  activeDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#111',
+    marginHorizontal: 4,
+  },
+
+  inactiveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#B7B7B7',
+    marginHorizontal: 4,
+  },
+});
