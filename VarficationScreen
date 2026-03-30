@@ -1,0 +1,172 @@
+import React, { useRef, useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  StatusBar,
+  SafeAreaView,
+} from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
+
+const Colors = {
+  primary: '#6CAF75',
+  white: '#F6F6F6',
+  accent: '#DDEADD',
+  button: '#4D8E58',
+  text: '#4F8A57',
+};
+
+export default function App() {
+  const [otp, setOtp] = useState(['', '', '', '']);
+
+  const refs = [useRef(), useRef(), useRef(), useRef()];
+
+  const handleChange = (value, index) => {
+    const clean = value.replace(/[^0-9]/g, '');
+    const newOtp = [...otp];
+    newOtp[index] = clean;
+    setOtp(newOtp);
+
+    if (clean && index < 3) refs[index + 1].current?.focus();
+  };
+
+  return (
+    <View style={styles.screen}>
+      <StatusBar barStyle="dark-content" backgroundColor={Colors.primary} />
+
+      <SafeAreaView style={styles.topSafe}>
+        <View style={styles.topSection}>
+          <TouchableOpacity style={styles.back}>
+            <Feather name="arrow-left" size={18} color="#111" />
+          </TouchableOpacity>
+
+          <Text style={styles.title}>رمز التحقق</Text>
+        </View>
+      </SafeAreaView>
+
+      
+      <View style={styles.whiteContainer}>
+
+        <Text style={styles.message}>
+          لقد أرسلنا رمز التحقق إلى{'\n'}رقم الجوال
+        </Text>
+
+        {/* OTP */}
+        <View style={styles.row}>
+          {otp.map((v, i) => (
+            <TextInput
+              key={i}
+              ref={refs[i]}
+              value={v}
+              maxLength={1}
+              keyboardType="number-pad"
+              onChangeText={(t) => handleChange(t, i)}
+              style={styles.box}
+              textAlign="center"
+            />
+          ))}
+        </View>
+
+        {/* زر */}
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>تأكيد</Text>
+        </TouchableOpacity>
+
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: Colors.primary,
+  },
+
+  topSafe: {
+    backgroundColor: Colors.primary,
+  },
+
+  topSection: {
+    height: 230,
+    paddingHorizontal: 18,
+    justifyContent: 'flex-end',
+  },
+
+  back: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+  },
+
+  title: {
+    alignSelf: 'flex-end',
+    marginRight: 28,
+    marginBottom: 90,
+    fontSize: 33,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
+  whiteContainer: {
+    flex: 1,
+    backgroundColor: Colors.white,
+
+
+    borderTopLeftRadius: 77,
+    borderTopRightRadius: 77,
+
+    marginTop: -40,  
+    paddingTop: 60,
+    paddingHorizontal: 20,
+  },
+
+  message: {
+    alignSelf: 'right',
+  textAlign: 'right',
+    fontSize: 24,
+    lineHeight: 42,
+    color: Colors.text,
+    fontWeight: '800',
+    marginRight: 18,
+  },
+
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 60,
+  },
+
+  box: {
+    width: 80,
+    height: 70,
+    backgroundColor: Colors.accent,
+    borderRadius: 10,
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
+
+  button: {
+    marginTop: 150,
+    width: '95%',
+    alignSelf: 'center',
+    height: 70,
+    backgroundColor: Colors.button,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+
+  buttonText: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+});
