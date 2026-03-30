@@ -1,0 +1,139 @@
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+} from 'react-native';
+
+const Onboarding1 = ({ navigation }) => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity
+        style={styles.skip}
+        onPress={() => navigation.navigate('SignIn')}
+      >
+        <Text style={styles.skipText}>تخطي</Text>
+      </TouchableOpacity>
+
+      <View style={styles.content}>
+        <Text style={styles.logoArabic}>حصاد</Text>
+        <Text style={styles.logoEnglish}>Hassad</Text>
+
+        <Text style={styles.title}>من المزرعة إلى باب بيتك</Text>
+        <Text style={styles.subtitle}>اختيارك الطازج يبدأ من هنا</Text>
+
+        <Image
+          source={require('./assets/onboarding1.png')}
+          style={styles.imageSmall}
+          resizeMode="contain"
+        />
+      </View>
+
+      <View style={styles.bottomSection}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate('Onboarding2')}
+        >
+          <Text style={styles.primaryButtonText}>التالي</Text>
+        </TouchableOpacity>
+
+        <View style={styles.dots}>
+          <View style={styles.activeDot} />
+          <View style={styles.inactiveDot} />
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export default Onboarding1;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#CFE3D0',
+  },
+  skip: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    marginRight: 20,
+  },
+  skipText: {
+    fontSize: 16,
+    color: '#111',
+    fontWeight: '500',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  logoArabic: {
+    fontSize: 62,
+    color: '#5F9F7C',
+    fontWeight: 'bold',
+    marginBottom: -8,
+  },
+  logoEnglish: {
+    fontSize: 42,
+    color: '#0D4E2D',
+    marginBottom: 14,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#111',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 22,
+    color: '#111',
+    textAlign: 'center',
+    marginBottom: 22,
+  },
+  imageSmall: {
+    width: 170,
+    height: 170,
+  },
+  bottomSection: {
+    paddingHorizontal: 24,
+    paddingBottom: 35,
+  },
+  primaryButton: {
+    backgroundColor: '#3D8B4F',
+    paddingVertical: 18,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  dots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 18,
+  },
+  activeDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#111',
+    marginHorizontal: 4,
+  },
+  inactiveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#B7B7B7',
+    marginHorizontal: 4,
+  },
+});
