@@ -1,0 +1,402 @@
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Feather from 'react-native-vector-icons/Feather';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const Colors = {
+  primary: '#72B67A',
+  white: '#F7F7F7',
+  card: '#FFFFFF',
+  text: '#2E2E2E',
+  muted: '#8F96A3',
+  lightGreen: '#D9F0DD',
+  greenDark: '#2F8A57',
+  border: '#E9E9E9',
+  iconGreen: '#BFE5C6',
+  iconBlue: '#D7E5FF',
+  iconPurple: '#E8D8FA',
+  iconYellow: '#F6E7A9',
+  bottomIcon: '#9CA3AF',
+};
+
+const StatCard = ({ iconBg, icon, title, subtitle }) => (
+  <TouchableOpacity style={styles.statCard} activeOpacity={0.85}>
+    <View style={[styles.smallIconWrap, { backgroundColor: iconBg }]}>
+      {icon}
+    </View>
+    <Text style={styles.statTitle}>{title}</Text>
+    <Text style={styles.statSubtitle}>{subtitle}</Text>
+  </TouchableOpacity>
+);
+
+export default function App() {
+  return (
+    <View style={styles.screen}>
+      <StatusBar barStyle="dark-content" backgroundColor={Colors.primary} />
+
+      <SafeAreaView edges={['top']} style={styles.topSafeArea}>
+        <View style={styles.greenHeader}>
+          <View style={styles.headerRow}>
+            <View style={styles.leftSide}>
+              <TouchableOpacity style={styles.backBtn}>
+                <Feather name="arrow-left" size={18} color="#1f2937" />
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.notifyBtn}>
+                <Ionicons name="notifications" size={16} color="#fff" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.rightSide}>
+              <Text style={styles.brandText}>حصاد</Text>
+
+              <TouchableOpacity style={styles.leafBtn}>
+                <Ionicons name="leaf" size={16} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </SafeAreaView>
+
+      <View style={styles.contentShell}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.welcomeCard}>
+            <View style={styles.welcomeTop}>
+              <View style={styles.welcomeTextWrap}>
+                <Text style={styles.welcomeTitle}>أهلاً بك ليان</Text>
+                <Text style={styles.farmName}>مزرعة النخيل - أبها</Text>
+                <Text style={styles.ratingText}>4.8 ⭐ (127 تقييم)</Text>
+              </View>
+
+              <View style={styles.avatarCircle}>
+                <Ionicons name="person" size={24} color={Colors.primary} />
+              </View>
+            </View>
+
+            <View style={styles.salesBox}>
+              <Text style={styles.salesLabel}>إجمالي المبيعات هذا الشهر</Text>
+              <Text style={styles.salesValue}>٢٥,٨٠٠ ريال</Text>
+            </View>
+          </View>
+
+          <View style={styles.grid}>
+            <StatCard
+              iconBg={Colors.iconGreen}
+              icon={
+                <MaterialIcons
+                  name="history"
+                  size={22}
+                  color={Colors.greenDark}
+                />
+              }
+              title="الطلبات السابقة"
+              subtitle="تاريخ المبيعات"
+            />
+
+            <StatCard
+              iconBg={Colors.iconBlue}
+              icon={<Entypo name="tag" size={20} color="#3B82F6" />}
+              title="العروض الحالية"
+              subtitle="إدارة منتجاتك"
+            />
+
+            <StatCard
+              iconBg={Colors.iconPurple}
+              icon={<Feather name="edit-2" size={20} color="#9333EA" />}
+              title="تعديل المزرعة"
+              subtitle="بيانات المزرعة"
+            />
+
+            <StatCard
+              iconBg={Colors.iconYellow}
+              icon={<Ionicons name="star" size={20} color="#D4A400" />}
+              title="التقييمات"
+              subtitle="آراء العملاء"
+            />
+          </View>
+        </ScrollView>
+
+        <SafeAreaView edges={['bottom']} style={styles.bottomSafeArea}>
+          <View style={styles.bottomBar}>
+            <TouchableOpacity style={styles.bottomItem}>
+              <Ionicons name="person" size={20} color={Colors.greenDark} />
+              <Text style={[styles.bottomLabel, styles.activeBottomLabel]}>
+                الحساب
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.bottomItem}>
+              <MaterialIcons
+                name="bar-chart"
+                size={20}
+                color={Colors.bottomIcon}
+              />
+              <Text style={styles.bottomLabel}>الإحصائيات</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.bottomItem}>
+              <Entypo name="tag" size={20} color={Colors.bottomIcon} />
+              <Text style={styles.bottomLabel}>العروض</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.bottomItem}>
+              <FontAwesome5
+                name="home"
+                size={18}
+                color={Colors.bottomIcon}
+              />
+              <Text style={styles.bottomLabel}>الرئيسية</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#F7F7F7',
+  },
+
+  topSafeArea: {
+    backgroundColor: Colors.primary,
+  },
+
+  greenHeader: {
+    height: 299,
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 20,
+     paddingTop: 10,
+  },
+
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 41,
+  },
+
+  leftSide: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  rightSide: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+  },
+
+  backBtn: {
+    marginRight: 10,
+  },
+
+  notifyBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#A8D8AE',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  leafBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#27C663',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+  },
+
+  brandText: {
+    fontSize: 22,
+    color: '#2D4C36',
+    fontWeight: '500',
+  },
+
+  contentShell: {
+    flex: 1,
+    backgroundColor: '#F7F7F7',
+    borderTopLeftRadius: 70,
+    borderTopRightRadius: 70,
+    marginTop: -77,
+    overflow: 'hidden',
+  },
+
+  scrollContent: {
+    paddingTop: 77,
+    paddingHorizontal: 18,
+    paddingBottom: 120,
+  },
+
+  welcomeCard: {
+    backgroundColor: Colors.card,
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 22,
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
+  },
+
+  welcomeTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  welcomeTextWrap: {
+    alignItems: 'flex-end',
+    flex: 1,
+    marginRight: 12,
+  },
+
+  avatarCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#D9F3DE',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  welcomeTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: Colors.text,
+  },
+
+  farmName: {
+    fontSize: 12,
+    color: Colors.text,
+    marginTop: 2,
+  },
+
+  ratingText: {
+    fontSize: 11,
+    color: Colors.greenDark,
+    marginTop: 2,
+  },
+
+  salesBox: {
+    marginTop: 11,
+    backgroundColor: Colors.lightGreen,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    alignItems: 'flex-end',
+  },
+
+  salesLabel: {
+    fontSize: 14,
+    color: Colors.greenDark,
+    marginBottom: 4,
+  },
+
+  salesValue: {
+    fontSize: 18,
+    color: '#16A34A',
+    fontWeight: '500',
+  },
+
+  grid: {
+    flexDirection: 'row-reverse',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    rowGap: 18,
+  },
+
+  statCard: {
+    width: '47.5%',
+    backgroundColor: Colors.card,
+    borderRadius: 16,
+    paddingVertical: 18,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 7,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
+  },
+
+  smallIconWrap: {
+    width: 42,
+    height: 42,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+
+  statTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: Colors.text,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+
+  statSubtitle: {
+    fontSize: 12,
+    color: Colors.muted,
+    textAlign: 'center',
+  },
+
+  bottomSafeArea: {
+    backgroundColor: '#F7F7F7',
+  },
+
+  bottomBar: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    bottom: 12,
+    backgroundColor: '#F4F4F4',
+    borderRadius: 26,
+    borderWidth: 1,
+    borderColor: '#E6E6E6',
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+
+  bottomItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 65,
+  },
+
+  bottomLabel: {
+    fontSize: 11,
+    color: Colors.bottomIcon,
+    marginTop: 4,
+  },
+
+  activeBottomLabel: {
+    color: Colors.greenDark,
+    fontWeight: '700',
+  },
+});
+
+
