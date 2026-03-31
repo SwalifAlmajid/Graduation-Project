@@ -19,7 +19,6 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Buffer } from "buffer";
 global.Buffer = global.Buffer || Buffer;
 
-// ✅ ضع هنا مفتاحك السري من Moyasar
 const MOYASAR_API_KEY = "pk_test_xnwLJ4UZt7WBjkmkS3H3isTxn3kpvAEMnmYsJenQ";
 
 export default function Checkout() {
@@ -93,7 +92,6 @@ export default function Checkout() {
     </TouchableOpacity>
   );
 
-  // ✅ تفريغ الحقول عند اختيار Mada
   const handleSelectMada = () => {
     setPaymentMethod("mada");
     setCardNumber("");
@@ -173,7 +171,7 @@ export default function Checkout() {
             month: monthInt,
             year: yearInt,
           },
-          amount: 100, // 1 ريال فقط = 100 هللة
+          amount: 100, 
           currency: "SAR",
           description: "حصاد - طلب جديد",
         }),
@@ -238,7 +236,6 @@ export default function Checkout() {
             </View>
           )}
 
-          {/* Delivery Time */}
           <Text style={styles.label}>Delivery Time</Text>
           <View style={styles.row}>
             <TouchableOpacity style={[styles.optionBtn, schedule === "now" && styles.selectedOption]} onPress={() => setSchedule("now")}>
@@ -274,10 +271,8 @@ export default function Checkout() {
             </>
           )}
 
-          {/* Payment */}
           <Text style={styles.label}>Payment Method</Text>
 
-          {/* Mada */}
           <TouchableOpacity style={styles.radioBtn} onPress={handleSelectMada}>
             <View style={styles.radioOuter}>{paymentMethod === "mada" && <View style={styles.radioInner} />}</View>
             <Text style={styles.radioText}>Mada</Text>
@@ -285,7 +280,6 @@ export default function Checkout() {
 
           <RadioOption label="Pay on Delivery (Cash)" value="cash" />
 
-          {/* Use Test Card */}
           {paymentMethod === "mada" && (
             <View style={{ marginBottom: 10 }}>
               <TouchableOpacity
@@ -307,7 +301,6 @@ export default function Checkout() {
                 <Text style={{ color: "white", textAlign: "center" }}>Use Test Card</Text>
               </TouchableOpacity>
 
-              {/* Card Fields */}
               <View style={styles.cardBox}>
                 <Text style={styles.inputLabel}>Card Number</Text>
                 <TextInput placeholder="1234 5678 9012 3456" style={styles.input} keyboardType="numeric" value={cardNumber} onChangeText={handleCardNumberChange} maxLength={19} />
