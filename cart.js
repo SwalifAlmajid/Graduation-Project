@@ -15,14 +15,14 @@ import { Ionicons } from "@expo/vector-icons";
 const initialCart = [
   {
     id: "1",
-    name: "Fresh Apples",
+    name: "تفاح طازج",
     price: 0,
     quantity: 1,
     image: "https://via.placeholder.com/80",
   },
   {
     id: "2",
-    name: "Organic Honey",
+    name: "عسل عضوي",
     price: 25,
     quantity: 2,
     image: "https://via.placeholder.com/80",
@@ -48,7 +48,7 @@ const QuantityButton = ({ item, decreaseQty, removeItem }) => {
           onPress={() => decreaseQty(item.id)}
           style={styles.qtyBtn}
         >
-          <Ionicons name="remove" size={22} color="#4A6741" />
+          <Ionicons name="remove" size={22} color="#2f6b3c" />
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
@@ -105,9 +105,8 @@ export default function Cart() {
 
         <View style={styles.itemInfo}>
           <Text style={styles.itemName}>{item.name}</Text>
-          {/* Subtotal in subtle gray */}
           <Text style={styles.subtotal}>
-            {item.price * item.quantity} SAR
+            {item.price * item.quantity} ريال
           </Text>
         </View>
 
@@ -122,7 +121,7 @@ export default function Cart() {
             onPress={() => increaseQty(item.id)}
             style={styles.qtyBtn}
           >
-            <Ionicons name="add" size={22} color="#4A6741" />
+            <Ionicons name="add" size={22} color="#2f6b3c" />
           </TouchableOpacity>
         </View>
       </View>
@@ -134,10 +133,12 @@ export default function Cart() {
   if (cart.length === 0) {
     return (
       <View style={styles.background}>
+        <Text style={styles.title}>سلة التسوق الخاصة بي</Text>
+
         <View style={styles.whiteContainer}>
           <View style={styles.emptyContainer}>
             <Ionicons name="cart-outline" size={60} color="#ccc" />
-            <Text style={styles.emptyText}>Your cart is empty</Text>
+            <Text style={styles.emptyText}>سلتك فارغة</Text>
           </View>
         </View>
       </View>
@@ -146,10 +147,11 @@ export default function Cart() {
 
   return (
     <View style={styles.background}>
+      <Text style={styles.title}>سلة التسوق الخاصة بي</Text>
+
       <View style={styles.whiteContainer}>
-        <Text style={styles.title}>My Cart</Text>
         <Text style={styles.cartCount}>
-          {cart.length} items in your cart
+          {cart.length} عنصر في سلتك
         </Text>
 
         <FlatList
@@ -160,14 +162,14 @@ export default function Cart() {
         />
 
         <View style={styles.footer}>
-          <Text style={styles.total}>Total: {total} SAR</Text>
+          <Text style={styles.total}>الإجمالي: {total} ريال</Text>
 
           <TouchableOpacity
             style={styles.checkoutBtn}
             onPress={() => navigation.navigate("checkout")}
           >
             <Text style={styles.checkoutText}>
-              Checkout ({cart.length})
+              الدفع ({cart.length})
             </Text>
           </TouchableOpacity>
         </View>
@@ -179,28 +181,30 @@ export default function Cart() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: "#63a775",
-    paddingTop: 40,
+    backgroundColor: "#63A874",
+    paddingTop: 120,
+  },
+
+  title: {
+    color: "#fff",
+    fontSize: 28,
+    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: 20,
   },
 
   whiteContainer: {
     flex: 1,
     backgroundColor: "#fff",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 16,
-    paddingTop: 20,
-  },
-
-  title: {
-    fontSize: 24,
-    fontWeight: "700",
-    marginBottom: 4,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    padding: 25,
   },
 
   cartCount: {
     color: "#777",
     marginBottom: 14,
+    textAlign: "right",
   },
 
   cartItem: {
@@ -224,18 +228,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 3,
+    color: "#2f6b3c",
   },
 
   subtotal: {
     fontWeight: "400",
-    color: "#777", // subtle gray like delivery apps
+    color: "#777",
     fontSize: 14,
   },
 
   qtyBox: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F3F3F3",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -267,9 +274,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: "#fff",
-    padding: 16,
-    borderTopWidth: 1,
-    borderColor: "#eee",
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
 
   total: {
@@ -279,9 +286,9 @@ const styles = StyleSheet.create({
   },
 
   checkoutBtn: {
-    backgroundColor: "#4A6741",
+    backgroundColor: "#2E7D32",
     padding: 16,
-    borderRadius: 14,
+    borderRadius: 30,
     alignItems: "center",
   },
 
