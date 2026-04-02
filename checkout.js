@@ -28,7 +28,7 @@ export default function Checkout() {
   const [coords, setCoords] = useState(null);
   const [loadingLocation, setLoadingLocation] = useState(true);
   const [mapVisible, setMapVisible] = useState(false);
-  const [schedule, setSchedule] = useState("now");
+  const [schedule, setSchedule] = useState("now"); // "now" or "later"
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -82,7 +82,6 @@ export default function Checkout() {
   );
 
   const handleSelectMada = () => { setPaymentMethod("mada"); setCardNumber(""); setExpiry(""); setCvv(""); };
-
   const isPayEnabled = () => paymentMethod && (paymentMethod !== "mada" || (cardNumber && expiry && cvv));
 
   const handleCardNumberChange = (text) => {
@@ -108,6 +107,7 @@ export default function Checkout() {
       <Text style={styles.title}>الدفع</Text>
       <View style={styles.whiteContainer}>
         <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+
           {/* Location */}
           <Text style={styles.label}>موقع التوصيل</Text>
           <View style={styles.locationCard}>
@@ -138,12 +138,32 @@ export default function Checkout() {
           {/* Delivery Time */}
           <Text style={styles.label}>وقت التوصيل</Text>
           <View style={styles.row}>
-            <TouchableOpacity style={[styles.optionBtn, schedule === "now" && styles.selectedOption]} onPress={() => setSchedule("now")}><Text style={styles.optionText}>اطلب الآن</Text></TouchableOpacity>
-            <TouchableOpacity style={[styles.optionBtn, schedule === "later" && styles.selectedOption]} onPress={() => setSchedule("later")}><Text style={styles.optionText}>تحديد موعد</Text></TouchableOpacity>
+            <TouchableOpacity style={[styles.optionBtn, schedule === "now" && styles.selectedOption]} onPress={() => setSchedule("now")}>
+              <Text style={styles.optionText}>اطلب الآن</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.optionBtn, schedule === "later" && styles.selectedOption]} onPress={() => setSchedule("later")}>
+              <Text style={styles.optionText}>تحديد موعد</Text>
+            </TouchableOpacity>
           </View>
-          {schedule === "later" && Platform.OS === "android" && <TouchableOpacity style={styles.androidPickerBtn} onPress={() => setShowPicker(true)}><Text style={{ color: "#fff", fontWeight: "600" }}>اختر التاريخ والوقت</Text></TouchableOpacity>}
-          {(showPicker || Platform.OS === "ios") && <DateTimePicker value={date} mode="datetime" display="default" onChange={(_, d) => { if (Platform.OS === "android") setShowPicker(false); if (d) setDate(d); }} minimumDate={new Date()} />}
-          {schedule === "later" && <Text style={{ marginBottom: 16, fontWeight: "600" }}>المحدد: {date.toLocaleDateString()} {date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Text>}
+
+          {/* DateTimePicker only for later */}
+          {schedule === "later" && Platform.OS === "android" && (
+            <TouchableOpacity style={styles.androidPickerBtn} onPress={() => setShowPicker(true)}>
+              <Text style={{ color: "#fff", fontWeight: "600" }}>اختر التاريخ والوقت</Text>
+            </TouchableOpacity>
+          )}
+          {schedule === "later" && (showPicker || Platform.OS === "ios") && (
+            <DateTimePicker
+              value={date}
+              mode="datetime"
+              display="default"
+              onChange={(_, d) => { if (Platform.OS === "android") setShowPicker(false); if (d) setDate(d); }}
+              minimumDate={new Date()}
+            />
+          )}
+          {schedule === "later" && (
+            <Text style={{ marginBottom: 16, fontWeight: "600" }}>المحدد: {date.toLocaleDateString()} {date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Text>
+          )}
 
           {/* Payment */}
           <Text style={styles.label}>طريقة الدفع</Text>
