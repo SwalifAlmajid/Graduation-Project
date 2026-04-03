@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 const Onboarding2 = ({ navigation }) => {
   return (
@@ -84,17 +87,18 @@ const styles = StyleSheet.create({
   },
 
   imageBox: {
-    width: 230,
-    height: 230,
+    width: width * 0.8,
+    height: width * 0.8,
     marginBottom: 10,
   },
 
   title: {
     fontSize: 29,
     fontWeight: 'bold',
-    color: '#111',
+    color: '#0D4E2D',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 9,
+      marginTop: -55,
   },
 
   subtitle: {
