@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 29,
     fontWeight: 'bold',
-    color: '#111',
+    color: '#0D4E2D',
     textAlign: 'center',
     marginBottom: 9,
       marginTop: -55,
@@ -167,3 +167,4 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
 });
+
