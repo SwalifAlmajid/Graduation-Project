@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 const Onboarding1 = ({ navigation }) => {
   return (
@@ -73,15 +76,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   logoArabic: {
-    fontSize: 62,
-    color: '#5F9F7C',
+    fontSize: 68,
+    color: '#285D34',
     fontWeight: 'bold',
     marginBottom: -8,
+ 
   },
   logoEnglish: {
-    fontSize: 42,
-    color: '#0D4E2D',
+    fontSize: 43,
+    color: '#306844',
     marginBottom: 14,
+   
   },
   title: {
     fontSize: 30,
@@ -97,8 +102,9 @@ const styles = StyleSheet.create({
     marginBottom: 22,
   },
   imageSmall: {
-    width: 170,
-    height: 170,
+    width: width * 0.8,
+    height: width * 0.8,
+    marginTop: 20,
   },
   bottomSection: {
     paddingHorizontal: 24,
@@ -137,3 +143,4 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
 });
+
