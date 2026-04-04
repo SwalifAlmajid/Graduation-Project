@@ -23,7 +23,7 @@ export default function AddProduct() {
 
     try {
 
-      await addDoc(collection(db, "products"), {
+      await addDoc(collection(db, "Products"), {
 
         type,
         name,
