@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -22,36 +22,57 @@ const Colors = {
 };
 
 export default function App({ navigation, route }) {
-  const [otp, setOtp] = useState(['', '', '', '', '', '']); 
+  const OTP_LENGTH = 6;
+  const RESEND_SECONDS = 60;
+
+  const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(''));
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
+  const [confirmation, setConfirmation] = useState(route?.params?.confirmation);
 
-  const refs = [
-    useRef(),
-    useRef(),
-    useRef(),
-    useRef(),
-    useRef(),
-    useRef(),
-  ];
+  const phoneNumber =
+    route?.params?.phoneNumber || route?.params?.phone || '';
 
-  const confirmation = route?.params?.confirmation;
-  const phoneNumber = route?.params?.phoneNumber || '';
+  const refs = useMemo(
+    () => Array.from({ length: OTP_LENGTH }, () => React.createRef()),
+    []
+  );
 
-  const handleChange = (value, index) => {
-    const clean = value.replace(/[^0-9]/g, '');
-    const newOtp = [...otp];
-    newOtp[index] = clean;
-    setOtp(newOtp);
+  const autoSubmittedRef = useRef(false);
 
-    if (clean && index < 5) {
-      refs[index + 1].current?.focus();
+  const focusInput = index => {
+    if (index >= 0 && index < OTP_LENGTH) {
+      refs[index]?.current?.focus?.();
     }
   };
 
-  const handleConfirm = async () => {
-    const code = otp.join('');
+  useEffect(() => {
+    if (secondsLeft <= 0) return;
 
-    if (code.length !== 6) {
+    const timer = setInterval(() => {
+      setSecondsLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [secondsLeft]);
+
+  const resetOtpBoxes = () => {
+    setOtp(Array(OTP_LENGTH).fill(''));
+    autoSubmittedRef.current = false;
+    setTimeout(() => focusInput(0), 100);
+  };
+
+  const submitCode = async code => {
+    if (loading) return;
+
+    if (code.length !== OTP_LENGTH) {
       Alert.alert('تنبيه', 'يرجى إدخال رمز التحقق كاملًا');
       return;
     }
@@ -73,9 +94,113 @@ export default function App({ navigation, route }) {
     } catch (error) {
       console.log('OTP error:', error);
       Alert.alert('خطأ', 'رمز التحقق غير صحيح أو منتهي الصلاحية');
+      autoSubmittedRef.current = false;
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    const code = otp.join('');
+    if (
+      code.length === OTP_LENGTH &&
+      !otp.includes('') &&
+      !autoSubmittedRef.current &&
+      !loading
+    ) {
+      autoSubmittedRef.current = true;
+      submitCode(code);
+    }
+  }, [otp, loading]);
+
+  const handleChange = (value, index) => {
+    const cleanValue = value.replace(/\D/g, '');
+
+    if (!cleanValue) {
+      const updatedOtp = [...otp];
+      updatedOtp[index] = '';
+      setOtp(updatedOtp);
+      autoSubmittedRef.current = false;
+      return;
+    }
+
+    if (cleanValue.length > 1) {
+      const pasted = cleanValue.slice(0, OTP_LENGTH).split('');
+      const updatedOtp = Array(OTP_LENGTH).fill('');
+
+      for (let i = 0; i < pasted.length; i++) {
+        updatedOtp[i] = pasted[i];
+      }
+
+      setOtp(updatedOtp);
+      autoSubmittedRef.current = false;
+
+      const nextIndex = Math.min(pasted.length, OTP_LENGTH - 1);
+      focusInput(nextIndex);
+      return;
+    }
+
+    const updatedOtp = [...otp];
+    updatedOtp[index] = cleanValue;
+    setOtp(updatedOtp);
+    autoSubmittedRef.current = false;
+
+    if (index < OTP_LENGTH - 1) {
+      focusInput(index + 1);
+    }
+  };
+
+  const handleKeyPress = (e, index) => {
+    if (e.nativeEvent.key === 'Backspace') {
+      if (otp[index]) {
+        const updatedOtp = [...otp];
+        updatedOtp[index] = '';
+        setOtp(updatedOtp);
+        autoSubmittedRef.current = false;
+      } else if (index > 0) {
+        const updatedOtp = [...otp];
+        updatedOtp[index - 1] = '';
+        setOtp(updatedOtp);
+        autoSubmittedRef.current = false;
+        focusInput(index - 1);
+      }
+    }
+  };
+
+  const handleConfirm = async () => {
+    const code = otp.join('');
+    await submitCode(code);
+  };
+
+  const handleResendCode = async () => {
+    if (!phoneNumber) {
+      Alert.alert('خطأ', 'رقم الجوال غير موجود');
+      return;
+    }
+
+    if (secondsLeft > 0 || resending) {
+      return;
+    }
+
+    setResending(true);
+    try {
+      const newConfirmation = await auth().signInWithPhoneNumber(phoneNumber);
+      setConfirmation(newConfirmation);
+      resetOtpBoxes();
+      setSecondsLeft(RESEND_SECONDS);
+      Alert.alert('تم', 'تمت إعادة إرسال رمز التحقق');
+    } catch (error) {
+      console.log('Resend OTP error:', error);
+      Alert.alert('خطأ', 'تعذر إعادة إرسال الرمز');
+    } finally {
+      setResending(false);
+    }
+  };
+
+  const formatTime = totalSeconds => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -100,27 +225,51 @@ export default function App({ navigation, route }) {
           لقد أرسلنا رمز التحقق إلى{'\n'}رقم الجوال
         </Text>
 
-        {/* OTP */}
         <View style={styles.row}>
           {otp.map((v, i) => (
             <TextInput
               key={i}
               ref={refs[i]}
               value={v}
-              maxLength={1}
+              maxLength={i === 0 ? OTP_LENGTH : 1}
               keyboardType="number-pad"
-              onChangeText={(t) => handleChange(t, i)}
+              onChangeText={t => handleChange(t, i)}
+              onKeyPress={e => handleKeyPress(e, i)}
               style={styles.box}
               textAlign="center"
+              editable={!loading && !resending}
             />
           ))}
         </View>
 
-        {/* زر تأكيد */}
+        <View style={styles.timerWrap}>
+          <Text style={styles.timerText}>
+            {secondsLeft > 0
+              ? `إعادة الإرسال خلال ${formatTime(secondsLeft)}`
+              : 'يمكنك إعادة إرسال الرمز الآن'}
+          </Text>
+
+          <TouchableOpacity
+            onPress={handleResendCode}
+            disabled={secondsLeft > 0 || resending || loading}
+            activeOpacity={0.8}
+          >
+            <Text
+              style={[
+                styles.resendText,
+                (secondsLeft > 0 || resending || loading) &&
+                  styles.resendTextDisabled,
+              ]}
+            >
+              {resending ? 'جارٍ إعادة الإرسال...' : 'إعادة إرسال الرمز'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <TouchableOpacity
           style={styles.button}
           onPress={handleConfirm}
-          disabled={loading}
+          disabled={loading || resending}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
@@ -197,6 +346,30 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 28,
     fontWeight: 'bold',
+  },
+
+  timerWrap: {
+    marginTop: 26,
+    alignItems: 'center',
+  },
+
+  timerText: {
+    fontSize: 16,
+    color: Colors.text,
+    fontWeight: '600',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+
+  resendText: {
+    fontSize: 16,
+    color: Colors.button,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+
+  resendTextDisabled: {
+    opacity: 0.5,
   },
 
   button: {
