@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "حصاد",
+    "slug": "hasad",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./logo.jpg",
+    "userInterfaceStyle": "light",
+    "scheme": "hasad",
+    "splash": {
+      "image": "./logo.jpg",
+      "resizeMode": "contain",
+      "backgroundColor": "#A5C0A8"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hasad.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./logo.jpg",
+        "backgroundColor": "#2D5A37"
+      },
+      "package": "com.hasad.app"
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {}
+    }
+  }
+}
