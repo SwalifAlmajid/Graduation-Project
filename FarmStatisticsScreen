@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -13,6 +15,13 @@ import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { getAuth, onAuthStateChanged, signOut } from '@react-native-firebase/auth';
+import {
+  getFirestore,
+  doc,
+  onSnapshot,
+} from '@react-native-firebase/firestore';
 
 const Colors = {
   primary: '#72B67A',
@@ -30,8 +39,8 @@ const Colors = {
   bottomIcon: '#9CA3AF',
 };
 
-const StatCard = ({ iconBg, icon, title, subtitle }) => (
-  <TouchableOpacity style={styles.statCard} activeOpacity={0.85}>
+const StatCard = ({ iconBg, icon, title, subtitle, onPress }) => (
+  <TouchableOpacity style={styles.statCard} activeOpacity={0.85} onPress={onPress}>
     <View style={[styles.smallIconWrap, { backgroundColor: iconBg }]}>
       {icon}
     </View>
@@ -40,7 +49,104 @@ const StatCard = ({ iconBg, icon, title, subtitle }) => (
   </TouchableOpacity>
 );
 
-export default function App() {
+export default function App({ navigation }) {
+  const [initializing, setInitializing] = useState(true);
+  const [firebaseUser, setFirebaseUser] = useState(null);
+  const [farmData, setFarmData] = useState({
+    name: '...',
+    farmName: '...',
+    city: '',
+    rating: 0,
+    reviewsCount: 0,
+    monthlySales: 0,
+  });
+
+  useEffect(() => {
+    const auth = getAuth();
+
+    const unsubscribeAuth = onAuthStateChanged(auth, user => {
+      setFirebaseUser(user);
+      if (initializing) setInitializing(false);
+
+      if (!user) {
+        setFarmData({
+          name: 'زائر',
+          farmName: 'لا توجد مزرعة',
+          city: '',
+          rating: 0,
+          reviewsCount: 0,
+          monthlySales: 0,
+        });
+      }
+    });
+
+    return unsubscribeAuth;
+  }, [initializing]);
+
+  useEffect(() => {
+    if (!firebaseUser?.uid) return;
+
+    const db = getFirestore();
+    const farmerRef = doc(db, 'farmers', firebaseUser.uid);
+
+    const unsubscribeSnapshot = onSnapshot(
+      farmerRef,
+      snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+
+          setFarmData({
+            name: data.name || 'بدون اسم',
+            farmName: data.farmName || 'بدون اسم مزرعة',
+            city: data.city || '',
+            rating: data.rating || 0,
+            reviewsCount: data.reviewsCount || 0,
+            monthlySales: data.monthlySales || 0,
+          });
+        } else {
+          setFarmData({
+            name: firebaseUser.displayName || 'مستخدم جديد',
+            farmName: 'مزرعتي',
+            city: '',
+            rating: 0,
+            reviewsCount: 0,
+            monthlySales: 0,
+          });
+        }
+      },
+      error => {
+        console.log('Firestore error:', error);
+        Alert.alert('خطأ', 'تعذر جلب بيانات المزرعة من Firebase');
+      }
+    );
+
+    return unsubscribeSnapshot;
+  }, [firebaseUser]);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(getAuth());
+      Alert.alert('تم', 'تم تسجيل الخروج');
+      if (navigation) {
+        navigation.navigate('Login');
+      }
+    } catch (error) {
+      Alert.alert('خطأ', error.message);
+    }
+  };
+
+  const formatCurrency = value => {
+    return new Intl.NumberFormat('ar-SA').format(value);
+  };
+
+  if (initializing) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color={Colors.greenDark} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.screen}>
       <StatusBar barStyle="dark-content" backgroundColor={Colors.primary} />
@@ -49,7 +155,10 @@ export default function App() {
         <View style={styles.greenHeader}>
           <View style={styles.headerRow}>
             <View style={styles.leftSide}>
-              <TouchableOpacity style={styles.backBtn}>
+              <TouchableOpacity
+                style={styles.backBtn}
+                onPress={() => navigation?.goBack?.()}
+              >
                 <Feather name="arrow-left" size={18} color="#1f2937" />
               </TouchableOpacity>
 
@@ -77,9 +186,14 @@ export default function App() {
           <View style={styles.welcomeCard}>
             <View style={styles.welcomeTop}>
               <View style={styles.welcomeTextWrap}>
-                <Text style={styles.welcomeTitle}>أهلاً بك ليان</Text>
-                <Text style={styles.farmName}>مزرعة النخيل - أبها</Text>
-                <Text style={styles.ratingText}>4.8 ⭐ (127 تقييم)</Text>
+                <Text style={styles.welcomeTitle}>أهلاً بك {farmData.name}</Text>
+                <Text style={styles.farmName}>
+                  {farmData.farmName}
+                  {farmData.city ? ` - ${farmData.city}` : ''}
+                </Text>
+                <Text style={styles.ratingText}>
+                  {farmData.rating} ⭐ ({farmData.reviewsCount} تقييم)
+                </Text>
               </View>
 
               <View style={styles.avatarCircle}>
@@ -89,7 +203,9 @@ export default function App() {
 
             <View style={styles.salesBox}>
               <Text style={styles.salesLabel}>إجمالي المبيعات هذا الشهر</Text>
-              <Text style={styles.salesValue}>٢٥,٨٠٠ ريال</Text>
+              <Text style={styles.salesValue}>
+                {formatCurrency(farmData.monthlySales)} ريال
+              </Text>
             </View>
           </View>
 
@@ -105,6 +221,7 @@ export default function App() {
               }
               title="الطلبات السابقة"
               subtitle="تاريخ المبيعات"
+              onPress={() => navigation?.navigate?.('OrdersHistory')}
             />
 
             <StatCard
@@ -112,6 +229,7 @@ export default function App() {
               icon={<Entypo name="tag" size={20} color="#3B82F6" />}
               title="العروض الحالية"
               subtitle="إدارة منتجاتك"
+              onPress={() => navigation?.navigate?.('Offers')}
             />
 
             <StatCard
@@ -119,6 +237,7 @@ export default function App() {
               icon={<Feather name="edit-2" size={20} color="#9333EA" />}
               title="تعديل المزرعة"
               subtitle="بيانات المزرعة"
+              onPress={() => navigation?.navigate?.('EditFarm')}
             />
 
             <StatCard
@@ -126,8 +245,13 @@ export default function App() {
               icon={<Ionicons name="star" size={20} color="#D4A400" />}
               title="التقييمات"
               subtitle="آراء العملاء"
+              onPress={() => navigation?.navigate?.('Reviews')}
             />
           </View>
+
+          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+            <Text style={styles.logoutText}>تسجيل الخروج</Text>
+          </TouchableOpacity>
         </ScrollView>
 
         <SafeAreaView edges={['bottom']} style={styles.bottomSafeArea}>
@@ -174,6 +298,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
 
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F7F7F7',
+  },
+
   topSafeArea: {
     backgroundColor: Colors.primary,
   },
@@ -182,7 +313,7 @@ const styles = StyleSheet.create({
     height: 299,
     backgroundColor: Colors.primary,
     paddingHorizontal: 20,
-     paddingTop: 10,
+    paddingTop: 10,
   },
 
   headerRow: {
@@ -362,6 +493,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
+  logoutBtn: {
+    marginTop: 24,
+    backgroundColor: '#E74C3C',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+
+  logoutText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+
   bottomSafeArea: {
     backgroundColor: '#F7F7F7',
   },
@@ -397,6 +542,7 @@ const styles = StyleSheet.create({
     color: Colors.greenDark,
     fontWeight: '700',
   },
+});
 });
 
 
