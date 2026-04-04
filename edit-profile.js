@@ -1,30 +1,20 @@
-// app/edit-profile.js
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   View, TextInput, TouchableOpacity, ScrollView, StyleSheet, Text, Animated, ActivityIndicator, Alert
 } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function EditProfile() {
-  const router = useRouter();
-  const params = useLocalSearchParams();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('+966');
-  const [address, setAddress] = useState('اختر عنوانك');
+  const [address, setAddress] = useState(''); 
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
-
-  useEffect(() => {
-    if (params?.selectedAddress && typeof params.selectedAddress === 'string') {
-      setAddress(params.selectedAddress);
-    }
-  }, [params?.selectedAddress]);
 
   const handleSave = async () => {
     if (!name || !email || !phone || !address || phone === '+966') {
@@ -102,20 +92,12 @@ export default function EditProfile() {
           />
 
           <Text style={styles.label}>العنوان</Text>
-          <TouchableOpacity 
-            style={styles.addressButton}
-            onPress={() => 
-              router.push({
-                pathname: "/select-address",
-                params: { fromEditProfile: "true" } 
-              })
-            }
-          >
-            <Text style={{color:'#2f6b3c'}}>
-              {address || 'اختر عنوانك'}
-            </Text>
-            <Ionicons name="location-outline" size={20} color="#2f6b3c" />
-          </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            value={address}
+            onChangeText={setAddress}
+            placeholder="اكتب عنوانك هنا"
+          />
 
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             {loading 
@@ -143,16 +125,6 @@ const styles = StyleSheet.create({
 
   label:{marginTop:15,marginBottom:5,fontWeight:"600"},
   input:{borderWidth:1,borderColor:"#ccc",borderRadius:12,padding:10},
-
-  addressButton:{
-    flexDirection:"row",
-    justifyContent:"space-between",
-    borderWidth:1,
-    borderColor:"#ccc",
-    borderRadius:12,
-    padding:12,
-    marginTop:5
-  },
 
   saveButton:{
     backgroundColor:"#2E7D32",
