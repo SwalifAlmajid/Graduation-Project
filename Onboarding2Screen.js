@@ -16,7 +16,7 @@ const Onboarding2 = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
         style={styles.skip}
-        onPress={() => navigation.navigate('SignIn')}
+        onPress={() => navigation.navigate('LoginScreen')}
       >
         <Text style={styles.skipText}>تخطي</Text>
       </TouchableOpacity>
