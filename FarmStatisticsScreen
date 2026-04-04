@@ -87,7 +87,7 @@ export default function App({ navigation }) {
     if (!firebaseUser?.uid) return;
 
     const db = getFirestore();
-    const farmerRef = doc(db, 'farmers', firebaseUser.uid);
+    const farmerRef = doc(db, 'Farmers', firebaseUser.uid);
 
     const unsubscribeSnapshot = onSnapshot(
       farmerRef,
@@ -128,7 +128,7 @@ export default function App({ navigation }) {
       await signOut(getAuth());
       Alert.alert('تم', 'تم تسجيل الخروج');
       if (navigation) {
-        navigation.navigate('Login');
+        navigation.navigate('LoginScreen');
       }
     } catch (error) {
       Alert.alert('خطأ', error.message);
@@ -229,7 +229,7 @@ export default function App({ navigation }) {
               icon={<Entypo name="tag" size={20} color="#3B82F6" />}
               title="العروض الحالية"
               subtitle="إدارة منتجاتك"
-              onPress={() => navigation?.navigate?.('Offers')}
+              onPress={() => navigation?.navigate?.('farms')}
             />
 
             <StatCard
@@ -237,7 +237,7 @@ export default function App({ navigation }) {
               icon={<Feather name="edit-2" size={20} color="#9333EA" />}
               title="تعديل المزرعة"
               subtitle="بيانات المزرعة"
-              onPress={() => navigation?.navigate?.('EditFarm')}
+              onPress={() => navigation?.navigate?.('FarmInfo')}
             />
 
             <StatCard
@@ -245,7 +245,7 @@ export default function App({ navigation }) {
               icon={<Ionicons name="star" size={20} color="#D4A400" />}
               title="التقييمات"
               subtitle="آراء العملاء"
-              onPress={() => navigation?.navigate?.('Reviews')}
+              onPress={() => navigation?.navigate?.('review')}
             />
           </View>
 
@@ -256,28 +256,40 @@ export default function App({ navigation }) {
 
         <SafeAreaView edges={['bottom']} style={styles.bottomSafeArea}>
           <View style={styles.bottomBar}>
-            <TouchableOpacity style={styles.bottomItem}>
-              <Ionicons name="person" size={20} color={Colors.greenDark} />
-              <Text style={[styles.bottomLabel, styles.activeBottomLabel]}>
-                الحساب
-              </Text>
+            <TouchableOpacity
+              style={styles.bottomItem}
+              onPress={() => navigation?.navigate?.('FarmInfo')}
+            >
+              <Ionicons name="person" size={20} color={Colors.bottomIcon} />
+              <Text style={styles.bottomLabel}>الحساب</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.bottomItem}>
+            <TouchableOpacity
+              style={styles.bottomItem}
+              onPress={() => navigation?.navigate?.('FarmStatisticsScreen')}
+            >
               <MaterialIcons
                 name="bar-chart"
                 size={20}
-                color={Colors.bottomIcon}
+                color={Colors.greenDark}
               />
-              <Text style={styles.bottomLabel}>الإحصائيات</Text>
+              <Text style={[styles.bottomLabel, styles.activeBottomLabel]}>
+                الإحصائيات
+              </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.bottomItem}>
+            <TouchableOpacity
+              style={styles.bottomItem}
+              onPress={() => navigation?.navigate?.('farms')}
+            >
               <Entypo name="tag" size={20} color={Colors.bottomIcon} />
               <Text style={styles.bottomLabel}>العروض</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.bottomItem}>
+            <TouchableOpacity
+              style={styles.bottomItem}
+              onPress={() => navigation?.navigate?.('WelcomeScreen')}
+            >
               <FontAwesome5
                 name="home"
                 size={18}
@@ -542,7 +554,6 @@ const styles = StyleSheet.create({
     color: Colors.greenDark,
     fontWeight: '700',
   },
-});
 });
 
 
