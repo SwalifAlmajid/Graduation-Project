@@ -22,13 +22,20 @@ const Colors = {
 };
 
 export default function App({ navigation, route }) {
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']); 
   const [loading, setLoading] = useState(false);
 
-  const refs = [useRef(), useRef(), useRef(), useRef()];
+  const refs = [
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+  ];
 
   const confirmation = route?.params?.confirmation;
-  const phoneNumber = route?.params?.phoneNumber || route?.params?.phone || '';
+  const phoneNumber = route?.params?.phoneNumber || '';
 
   const handleChange = (value, index) => {
     const clean = value.replace(/[^0-9]/g, '');
@@ -36,13 +43,15 @@ export default function App({ navigation, route }) {
     newOtp[index] = clean;
     setOtp(newOtp);
 
-    if (clean && index < 3) refs[index + 1].current?.focus();
+    if (clean && index < 5) {
+      refs[index + 1].current?.focus();
+    }
   };
 
   const handleConfirm = async () => {
     const code = otp.join('');
 
-    if (code.length !== 4) {
+    if (code.length !== 6) {
       Alert.alert('تنبيه', 'يرجى إدخال رمز التحقق كاملًا');
       return;
     }
@@ -55,13 +64,14 @@ export default function App({ navigation, route }) {
     setLoading(true);
     try {
       await confirmation.confirm(code);
+
       Alert.alert('تم', 'تم التحقق بنجاح');
 
       navigation.navigate('resetpassword', {
         phoneNumber,
       });
     } catch (error) {
-      console.log('OTP verify error:', error);
+      console.log('OTP error:', error);
       Alert.alert('خطأ', 'رمز التحقق غير صحيح أو منتهي الصلاحية');
     } finally {
       setLoading(false);
@@ -90,6 +100,7 @@ export default function App({ navigation, route }) {
           لقد أرسلنا رمز التحقق إلى{'\n'}رقم الجوال
         </Text>
 
+        {/* OTP */}
         <View style={styles.row}>
           {otp.map((v, i) => (
             <TextInput
@@ -105,6 +116,7 @@ export default function App({ navigation, route }) {
           ))}
         </View>
 
+        {/* زر تأكيد */}
         <TouchableOpacity
           style={styles.button}
           onPress={handleConfirm}
