@@ -16,7 +16,7 @@ const Onboarding2 = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
         style={styles.skip}
-        onPress={() => navigation.navigate('LoginScreen')}
+        onPress={() => navigation.navigate('UserSignUp')}
       >
         <Text style={styles.skipText}>تخطي</Text>
       </TouchableOpacity>
@@ -38,14 +38,14 @@ const Onboarding2 = ({ navigation }) => {
       <View style={styles.bottomSection}>
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={() => navigation.navigate('SignIn')}
+          onPress={() => navigation.navigate('UserSignUp')}
         >
           <Text style={styles.primaryButtonText}>ابدأ الآن</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.secondaryButton}
-          onPress={() => navigation.navigate('SignIn')}
+          onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.secondaryButtonText}>تسجيل الدخول</Text>
         </TouchableOpacity>
@@ -167,4 +167,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
 });
-
