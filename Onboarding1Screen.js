@@ -16,7 +16,7 @@ const Onboarding1 = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
         style={styles.skip}
-        onPress={() => navigation.navigate('LoginScreen')}
+        onPress={() => navigation.navigate('UserSignUp')}
       >
         <Text style={styles.skipText}>تخطي</Text>
       </TouchableOpacity>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 22,
+    fontSize: 20,
     color: '#111',
     textAlign: 'center',
     marginBottom: 22,
@@ -115,17 +115,18 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     backgroundColor: '#3D8B4F',
-    paddingVertical: 18,
+    paddingVertical: 16,
+    marginHorizontal: 19,
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 3,
+    elevation: 1,
      
 
   },
   primaryButtonText: {
     color: '#fff',
-    fontSize: 30,
+    fontSize: 27,
     fontWeight: 'bold',
   },
   dots: {
@@ -153,5 +154,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
 });
-
-
